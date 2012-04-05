@@ -1,0 +1,213 @@
+<style>
+ol, ul {
+	list-style: none;
+}
+
+/* DEFAULT  */
+.clear {clear:both;}
+.left{float:left}
+
+/* FORM SECTIONS */
+.row {white-space:nowrap; margin-bottom:10px;}
+.rLeftcolShortAnswer {float:left; width:60px; text-align:center;}
+.answer_point {padding:1px; border:solid 1px #CCCCCC; font-family:Arial, Helvetica, sans-serif; font-size:12px; width:40px;}
+.answer_detail_left_col {float:left; width:205px; padding-bottom:20px;}
+.answer_detail_right_col {float:left;}
+.answer_response{float: left;width:400px;}
+.answer_point,
+.answer_response{
+	margin-bottom:5px;
+}
+
+.btnGeneric {margin-top: 5px;}
+.btnGeneric span.ui-button-text {margin-top:-2px;}
+.btnGeneric span.ui-button-text a.no-icon{ padding-left: 10px;}
+.btnGenericSquare span.ui-button-text{ text-indent: 0px; }
+
+button.btnGeneric,
+button.btnGenericSquare{	font-size:11px; height: 22px;}
+a.annuler{padding-right: 10px;padding-left: 10px;margin-right: 50px; height: 20px; vertical-align: bottom}
+button.thematique{margin-left: 10px;}
+button.btnSupprimer{height:30px; width: 30px;}
+.btnSupprimer span.ui-icon-close{margin-top:-10px}
+div.item {cursor:move; margin-right:5px; margin-bottom: 2px}
+span.btnSort{margin: 5px;}
+
+
+.element_sort .answers{	
+	margin-top:10px;
+}
+
+/*start question section*/
+#question_section {width: 80%;padding-top:0px;background:#cfcfcf;}
+#question_section h4 { margin:0px; padding:0px;}
+#question_section img { float:right;}
+#question_section ul { margin:0px 0 10px 15px; padding:0px;}
+#question_section td { color:#000; padding:5px 5px; }
+#question_section tr.even { background:#afafaf;}
+#question_section tr.even td{color:#fff; text-align:left;}
+#question_section div.arrow { background:transparent url(arrows.png) no-repeat scroll 0px -16px; width:16px; height:16px; display:block;}
+#question_section div.up { background-position:0px 0px;}
+#question_section .btnGeneric {margin-top: 0px;}
+#question_section .question {width: 600px;}
+#question_section .col_arrow {width: 10px;}
+#question_section .col_action {width: 10px;}
+#question_section .element_sort .answers{margin-top: 0px;}
+#question_section .row{margin-bottom: 0px;}
+#question_section .rRightcol{margin-left: 5px;}
+#question_section .answer_response{width: 550px;}
+#question_section .add_answer{margin: 0px 0px 0px 20px;}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" language="javascript">
+$(document).ready(function(){
+	set_toggle();
+	delete_question();
+});
+
+function set_toggle(q_count){
+	
+	if((typeof q_count) == 'undefined'){
+				
+		$("#question_section tr:even").each(function(index) {
+			
+			if(index > 0){
+				sClassName = 'even_' + (index + 1);
+			}
+			else {
+				sClassName = 'even';
+			}
+			
+			$(this).addClass(sClassName);	
+			
+			$(this).click(function(){
+				$(this).next("tr").toggle();
+				$(this).find(".arrow").toggleClass("up");
+			});	
+			$(this).removeAttr('style');
+			$(this).attr('style', 'background: none repeat scroll 0 0 #AFAFAF');			
+		});	
+		
+		$("#question_section tr:not([class*=even])").hide();
+	}
+	else{
+		sClassName = 'even_' + q_count;
+		$("#question_section tr."+sClassName).click(function(){
+			$(this).next("tr").toggle();
+			$(this).find(".arrow").toggleClass("up");
+		});		
+	}
+}
+
+function add_question() {
+	var htmlCode = '';	
+	var question_element = $("#question_section");
+	
+	var q_count = document.getElementById('question_count').value;
+	q_count = parseInt(q_count) + 1;
+	$('input[name=question_count]').val(q_count);
+	
+	htmlCode += '<tr class="question_'+q_count+' even_'+q_count+'" style="background: none repeat scroll 0 0 #AFAFAF;">';
+		htmlCode += '<td class="col_arrow"><div class="arrow"></div></td>';
+		htmlCode += '<td><input name="question['+q_count+']" value= "" class="question"></td>';
+		htmlCode += '<td class="col_action"><button class="btnGeneric delete_question ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" rel="'+q_count+'" onclick="return false;"><span class="ui-button-text"><b>X</b></span></button></td>';
+	htmlCode += '</tr>';
+	htmlCode += '<tr class="question_'+q_count+'" style="display:none;">';
+		htmlCode += '<td colspan="3">';
+			htmlCode += '<div id="div_answer_'+q_count+'">';
+				htmlCode += '<ul>';
+					htmlCode += '<li rel="">';
+						htmlCode += '<div class="answers">';
+								htmlCode += '<div class="row">';
+									htmlCode += '<div class="rLeftcolShortAnswer"><b>Point</b></div>';
+									htmlCode += '<div class="rRightcol"><b>Answer</b></div>';
+									htmlCode += '<div class="clear"></div>';
+								htmlCode += '</div>';
+						htmlCode += '</div>';
+					htmlCode += '</li>';				
+					htmlCode += '<li class="element_sort" rel="">';
+					htmlCode += '<div class="answers">';
+						htmlCode += '<div class="row">';
+							htmlCode += '<div class="rLeftcolShortAnswer"><input name="point['+q_count+'][]" value= "" class="answer_point" maxlength="2"></div>';
+							htmlCode += '<div class="rRightcol"><input name="answer['+q_count+'][]" value= "" class="answer_response"></div>';
+							htmlCode += '<div class="left" style="position:relative; left:10px;">';
+								htmlCode += '<button class="btnGeneric delete_answer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="delete_answer_'+q_count+'_1" onclick="delete_question_answer('+q_count+',1); return false;"><span class="ui-button-text"><b>X</b></span></button>';
+							htmlCode += '</div>';
+							htmlCode += '<div class="clear"></div>';
+						htmlCode += '</div>';
+					htmlCode += '</div>';
+					htmlCode += '</li>';
+				htmlCode += '</ul>';
+			htmlCode += '</div>';
+			htmlCode += '<div class="row">';
+				htmlCode += '<button class="btnGeneric add_answer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="add_answer_'+q_count+'" onclick="add_question_answer('+q_count+'); return false;" role="button" aria-disabled="false"><span class="ui-button-text">Add new question option</span></button>';
+			htmlCode += '</div>';
+		htmlCode += '</td>';
+	htmlCode += '</tr>';
+	
+	$(question_element).append(htmlCode);
+	
+	delete_question();
+	set_toggle(q_count);
+	return false;
+}
+
+function delete_question(){
+	$(".delete_question").click(function(){
+		//$('.question_' + $(this).attr('rel')).remove();
+		$('.question_' + $(this).attr('rel')).fadeOut('slow', function(){
+			$(this).remove();
+			
+			$("#question_section tr[class*=even]").removeAttr('style');
+			$("#question_section tr[class*=even]").attr('style', 'background: none repeat scroll 0 0 #AFAFAF');
+			
+			if($('#question_section tr').size() <= 0){
+				$('#question_section tbody').remove();
+			}
+		});
+	});
+}
+
+function delete_question_answer(question_id,answer_id){
+	var del_answer_element = $("#delete_answer_" + question_id + "_" + answer_id);
+	
+	//del_answer_element.parent().parent().parent().parent().fadeOut('slow', function() { $(this).remove(); });
+	del_answer_element.parent().parent().parent().parent().remove();
+	return false;
+}
+
+function add_question_answer(question_id){
+
+	var answer_element = $("#add_answer_" + question_id);
+	var div_answer_element = $("#div_answer_" + question_id + ' .element_sort');
+	var div_answer_ul_element = $("#div_answer_" + question_id + ' ul');
+	var count = parseInt(div_answer_element.length) + 1;
+
+	var htmlCode = '';	
+	//htmlCode += '<div id="div_answer_clone" style="display:block">';
+		htmlCode += '<li class="element_sort" rel="">';
+		htmlCode += '<div class="answers">';
+			htmlCode += '<div class="row">';
+				htmlCode += '<div class="rLeftcolShortAnswer"><input name="point['+question_id+'][]" class="answer_point" maxlength="2"></div>';
+				htmlCode += '<div class="rRightcol"><input name="answer['+question_id+'][]" class="answer_response"></div>';
+				htmlCode += '<div class="left" style="position:relative; left:10px;">';
+					htmlCode += '<button class="btnGeneric delete_answer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="delete_answer_'+question_id+'_'+count+'" onclick="delete_question_answer('+question_id+','+count+'); return false;"><span class="ui-button-text"><b>X</b></span></button>';
+				htmlCode += '</div>';
+				htmlCode += '<div class="clear"></div>';
+			htmlCode += '</div>';
+		htmlCode += '</div>';
+		htmlCode += '</li>';
+	//htmlCode += '</div>';
+	
+	$(div_answer_ul_element).append(htmlCode);
+	return false;
+}
+</script>
+<form name="form" id="form" action="" method="post">
+	<input type="hidden" name="question_count" id="question_count" value="1">
+    <table id="question_section">
+    </table>
+    <div class="row">
+        <button class="btnGeneric" onclick="add_question();return false;">Add new question</button>
+    </div>
+</form>
