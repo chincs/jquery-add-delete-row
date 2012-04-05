@@ -1,0 +1,16 @@
+Jquery add delete row
+===============
+This is a simple jquery script that allow you to add the outer and inner row. For example, create a quiz with multiple question and each question contain multiple answer and point.
+
+
+Usage
+-----
+Refer to index.html for sample code on how to use.
+The jquery.js is downloaded from http://jquery.com, you can download the latest version from http://jquery.com as well.
+
+
+Feedback
+--------
+Written by Chin Choon Seong.
+
+Feedback and suggestions are welcomed. Please contact me from chincs82@yahoo.com
